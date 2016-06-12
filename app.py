@@ -45,6 +45,19 @@ def params_post():
     }
 
 
+@app.route("/stream-title", methods=["POST"])
+def stream_title_post():
+    if flask.request.form["secret"] != secret:
+        return "Invalid secret", 401
+
+    global current_title
+    current_title = flask.request.form["title"]
+    for sink in current_sinks:
+        sink.put(_js_set_title(current_title))
+
+    return "ok", 200
+
+
 @app.route("/events")
 def events():
     def gen():
