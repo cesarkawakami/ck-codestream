@@ -1,0 +1,56 @@
+<!doctype html>
+<head>
+    <title>CK-CodeStream Overlay</title>
+    <style>
+    body {
+        background: transparent;
+        font-family: "PT Sans", sans-serif;
+        font-size: 22px;
+        margin: 0;
+        padding: 0;
+    }
+
+    #stripe {
+        background-color: rgb(255, 61, 104);
+        height: 23px;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 0 5px;
+
+        color: white;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .stripe-section {
+
+    }
+
+    .stripe-identity {
+        font-family: "PT Sans Caption", sans-serif;
+        font-weight: bold;
+    }
+    </style>
+    <link href='https://fonts.googleapis.com/css?family=PT+Sans|PT+Sans+Caption:700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+    <div id=stripe>
+        <div class="stripe-section stripe-title">
+
+        </div>
+        <div class="stripe-section stripe-identity">
+            @cesarkawakami
+        </div>
+    </div>
+    <script>
+    !function() {
+        var eventSource = new EventSource("/events");
+        eventSource.addEventListener("eval", function(evt) {
+            var code = JSON.parse(evt.data);
+            eval(code);
+        });
+    }();
+    </script>
+</body>
