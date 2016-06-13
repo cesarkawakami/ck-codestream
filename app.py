@@ -73,9 +73,7 @@ def twitch_title_post():
             "Authorization": "OAuth %s" % twitch_access_token,
         },
         data={
-            "channel": {
-                "status": flask.request.form["title"],
-            }
+            "channel[status]": flask.request.form["title"],
         },
     )
     response.raise_for_status()
