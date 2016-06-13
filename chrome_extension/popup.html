@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<title>CK-CodeStream</title>
+<style>
+body {
+    font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+    font-size: 90%;
+    width: 400px;
+    height: 400px;
+    overflow: scroll;
+}
+.hidden {
+    display: none;
+}
+#errors {
+    white-space: pre-wrap;
+    color: red;
+}
+#errors-container {
+    margin-top: 20px;
+}
+
+#site, #problem-name, #stream-title, #twitch-title {
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+<h3>CK-CodeStream</h3>
+
+<p>Detected site:<br><span id=site>&nbsp;</span></p>
+
+<p>Detected problem name:<br><span id=problem-name>&nbsp;</span></p>
+
+<p>Stream title template:<br><input
+    type=text
+    id=stream-title-template
+    name=stream-title-template
+    style="width: 300px;"
+    value='Now Solving: {{problem_name}} [{{site}}, Hard]'
+></p>
+
+<p>Stream title:<br><span id=stream-title>&nbsp;</span><br><button id=send-stream-title>Send</button></p>
+
+<p>Twitch title template:<br><input
+    type=text
+    id=twitch-title-template
+    name=twitch-title-template
+    style="width: 300px;"
+    value='Code Puzzles: {{site}} Hard Puzzles #programming #challenges #puzzles #{{site}}'
+></p>
+
+<p>Twitch title:<br><span id=twitch-title>&nbsp;</span><br><button id=send-twitch-title>Send</button></p>
+
+<script src="popup.js"></script>
+</body>
+</html>

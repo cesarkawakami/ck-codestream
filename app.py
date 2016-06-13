@@ -6,10 +6,13 @@ import gevent.queue
 
 import flask
 
+import requests
+
 
 app = flask.Flask(__name__)
 logger = logging.getLogger(__name__)
 secret = os.environ["SECRET"]
+twitch_access_token = os.environ["TWITCH_ACCESS_TOKEN"]
 
 current_sinks = []
 current_title = u"Still Untitled!"
@@ -54,6 +57,28 @@ def stream_title_post():
     current_title = flask.request.form["title"]
     for sink in current_sinks:
         sink.put(_js_set_title(current_title))
+
+    return "ok", 200
+
+
+@app.route("/twitch-title", methods=["POST"])
+def twitch_title_post():
+    if flask.request.form["secret"] != secret:
+        return "Invalid secret", 401
+
+    response = requests.put(
+        "https://api.twitch.tv/kraken/channels/cesarkawakami",
+        headers={
+            "Accept": "application/vnd.twitchtv.v3+json",
+            "Authorization": "OAuth %s" % twitch_access_token,
+        },
+        data={
+            "channel": {
+                "status": flask.requests.form["title"],
+            }
+        },
+    )
+    response.raise_for_status()
 
     return "ok", 200
 
