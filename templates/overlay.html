@@ -46,11 +46,17 @@
     </div>
     <script>
     !function() {
-        var eventSource = new EventSource("/events");
-        eventSource.addEventListener("eval", function(evt) {
-            var code = JSON.parse(evt.data);
-            eval(code);
-        });
+        setInterval(function() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    document.querySelector("#stripe-title").textContent = data.title;
+                }
+            };
+            xhr.open("GET", "https://ck-codestream.herokuapp.com/state", true);
+            xhr.send();
+        }, 2000);
     }();
     </script>
 </body>

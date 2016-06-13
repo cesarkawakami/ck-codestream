@@ -74,7 +74,7 @@ def twitch_title_post():
         },
         data={
             "channel": {
-                "status": flask.requests.form["title"],
+                "status": flask.request.form["title"],
             }
         },
     )
@@ -83,46 +83,53 @@ def twitch_title_post():
     return "ok", 200
 
 
-@app.route("/events")
-def events():
-    def gen():
-        q = gevent.queue.Queue()
-        current_sinks.append(q)
-
-        yield _evt_eval(_js_set_title(current_title))
-
-        try:
-            while True:
-                try:
-                    item = q.get(timeout=10)
-                except gevent.queue.Empty:
-                    yield ": keepalive\n\n"
-                else:
-                    yield _evt_eval(item)
-        finally:
-            current_sinks.remove(q)
-
-    return flask.Response(gen(), mimetype="text/event-stream")
+@app.route("/state")
+def state():
+    return flask.jsonify({
+        "title": current_title,
+    })
 
 
-def _evt_eval(code):
-    return "event: eval\ndata: %s\n\n" % json.dumps(code)
+# @app.route("/events")
+# def events():
+#     def gen():
+#         q = gevent.queue.Queue()
+#         current_sinks.append(q)
+
+#         yield _evt_eval(_js_set_title(current_title))
+
+#         try:
+#             while True:
+#                 try:
+#                     item = q.get(timeout=10)
+#                 except gevent.queue.Empty:
+#                     yield ": keepalive\n\n"
+#                 else:
+#                     yield _evt_eval(item)
+#         finally:
+#             current_sinks.remove(q)
+
+#     return flask.Response(gen(), mimetype="text/event-stream")
 
 
-def _js_wrap(code):
-    return "!function() { %s }();" % code
+# def _evt_eval(code):
+#     return "event: eval\ndata: %s\n\n" % json.dumps(code)
 
 
-def _js_set_text(selector, text):
-    return _js_wrap(
-        """
-        var elemSet = document.querySelectorAll(%s);
-        for (var i = 0; i < elemSet.length; ++i) {
-            var el = elemSet[i];
-            el.textContent = %s;
-        }
-        """ % (json.dumps(selector), json.dumps(text))
-    )
+# def _js_wrap(code):
+#     return "!function() { %s }();" % code
 
-def _js_set_title(title):
-    return _js_set_text(".stripe-title", title)
+
+# def _js_set_text(selector, text):
+#     return _js_wrap(
+#         """
+#         var elemSet = document.querySelectorAll(%s);
+#         for (var i = 0; i < elemSet.length; ++i) {
+#             var el = elemSet[i];
+#             el.textContent = %s;
+#         }
+#         """ % (json.dumps(selector), json.dumps(text))
+#     )
+
+# def _js_set_title(title):
+#     return _js_set_text(".stripe-title", title)
